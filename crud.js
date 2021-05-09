@@ -9,3 +9,35 @@ const connection = mysql.createConnection({
 	password: "password",
 	database: "employee_db",
 });
+
+function init() {
+  inquirer
+    .prompt({
+      name: 'choice',
+      type: 'list',
+      message: 'Please select an option',
+      choices: [
+        'View All Employees'
+      ],
+    })
+    .then(function(answers) {
+      switch (answers.action) {
+        case 'View All Employees':
+          test();
+          break;
+
+        default:
+          console.log(`Don't Do That!"`);
+          break;
+      }
+    });
+};
+
+init();
+
+
+connection.connect((err) => {
+	if (err) throw err;
+
+	connection.end();
+});
