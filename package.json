@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node crud.js" 
+    "start": "node crud.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/CodyG-2021/12-MySQL-Employee-Tracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
+    "figlet": "^1.5.0",
     "inquirer": "^8.0.0",
     "mysql": "^2.18.1"
   }

@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql');
+const figlet = require('figlet');
 
 
 const connection = mysql.createConnection({
@@ -15,7 +16,7 @@ function init() {
     .prompt({
       name: 'choice',
       type: 'list',
-      message: 'Please select an option',
+      message: 'What would you like to do?',
       choices: [
         'View All Employees'
       ],
@@ -33,11 +34,17 @@ function init() {
     });
 };
 
-init();
 
-
+//cosmike font looks cool
 connection.connect((err) => {
 	if (err) throw err;
-
-	connection.end();
+	console.log(figlet.textSync('Employee Tracker', {
+    font: 'Star Wars',
+    horizontalLayout: 'default',
+    verticalLayout: 'default',
+    width: 120,
+    whitespaceBreak: true
+}));
+console.log('\n');
+	init();
 });
