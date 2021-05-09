@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql');
 const figlet = require('figlet');
+const cTable = require('console.table');
 
 
 const connection = mysql.createConnection({
@@ -21,10 +22,10 @@ function init() {
         'View All Employees'
       ],
     })
-    .then(function(answers) {
-      switch (answers.action) {
+    .then((answers) => {
+      switch (answers.choice) {
         case 'View All Employees':
-          test();
+          employeeSearch();
           break;
 
         default:
@@ -32,6 +33,21 @@ function init() {
           break;
       }
     });
+};
+
+const employeeSearch = () => {
+	connection.query(
+			`SELECT 
+			  CONCAT(e.first_name, ' ', e.last_name) AS 'Name',
+			  r.title AS 'Title'
+		  FROM employee e
+		  LEFT JOIN role r ON e.role_id = r.id`,
+			(err, res) => {
+					if (err) throw err;
+					console.table("All Employees", res);
+					init();
+			}
+	);
 };
 
 
