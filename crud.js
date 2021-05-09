@@ -13,54 +13,87 @@ const connection = mysql.createConnection({
 });
 
 function init() {
-  inquirer
-    .prompt({
-      name: 'choice',
-      type: 'list',
-      message: 'What would you like to do?',
-      choices: [
-        'View All Employees'
-      ],
-    })
-    .then((answers) => {
-      switch (answers.choice) {
-        case 'View All Employees':
-          employeeSearch();
-          break;
-
-        default:
-          console.log(`Don't Do That!"`);
-          break;
-      }
-    });
+	inquirer
+		.prompt({
+			name: 'choice',
+			type: 'list',
+			message: 'What would you like to do?',
+			choices: [
+				'View all Employees.',
+				'Add Department, Role, or Employee.'
+			],
+		})
+		.then((res) => {
+			switch (res.choice) {
+				case 'View all Employees.':
+					employeeSearch();
+					break;
+				case 'Add Department, Role, or Employee.':
+					addOption();
+					break;
+				default:
+					console.log('Invalid option restarting...');
+					init();
+					break;
+			}
+		});
 };
 
-const employeeSearch = () => {
+//Pulls the employee their title and role.
+function employeeSearch() {
 	connection.query(
-			`SELECT 
-			  CONCAT(e.first_name, ' ', e.last_name) AS 'Name',
-			  r.title AS 'Title'
+		`SELECT 
+			CONCAT(e.first_name, ' ', e.last_name) AS 'Name',
+			r.title AS 'Title',
+			d.name AS 'Department'
 		  FROM employee e
-		  LEFT JOIN role r ON e.role_id = r.id`,
-			(err, res) => {
-					if (err) throw err;
-					console.table("All Employees", res);
-					init();
-			}
+		  LEFT JOIN role r ON e.role_id = r.id
+			LEFT JOIN department d ON r.department_id = d.id`,
+		(err, res) => {
+			if (err) throw err;
+			console.table("All Employees", res);
+			init();
+		}
 	);
 };
 
+function addOption () {
+	inquirer
+	.prompt([
+		{
+			name: 'add',
+			type: 'list',
+			message: 'Select an option to add',
+			choices: ['Department', 'Role', 'Employee', 'Exit']
+		}
+	]).then((res) => {
+		switch (res.choice) {
+			case 'Department':
+				addDepartment();
+				break;
+			case 'Role':
+				addRole();
+				break;
+			case 'Employee':
+				addEmployee();
+				break;
+			default:
+				init();
+				break;
+		}
+	})
+};
 
-//cosmike font looks cool
 connection.connect((err) => {
 	if (err) throw err;
 	console.log(figlet.textSync('Employee Tracker', {
-    font: 'Star Wars',
-    horizontalLayout: 'default',
-    verticalLayout: 'default',
-    width: 120,
-    whitespaceBreak: true
-}));
-console.log('\n');
+		//cosmike font looks cool
+		font: 'Star Wars',
+		horizontalLayout: 'default',
+		verticalLayout: 'default',
+		width: 120,
+		whitespaceBreak: true
+	}));
+	console.log('\n');
 	init();
 });
