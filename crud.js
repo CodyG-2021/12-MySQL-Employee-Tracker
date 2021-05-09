@@ -20,7 +20,10 @@ function init() {
 			message: 'What would you like to do?',
 			choices: [
 				'View all Employees.',
-				'Add Department, Role, or Employee.'
+				'View all Departments.',
+				'View all Roles.',
+				'Add Department, Role, or Employee.',
+				'Exit'
 			],
 		})
 		.then((res) => {
@@ -31,9 +34,15 @@ function init() {
 				case 'Add Department, Role, or Employee.':
 					addOption();
 					break;
+				case 'View all Departments.':
+					showDept();
+					break;
+				case 'View all Roles.':
+					showRoles();
+					break;
 				default:
-					console.log('Invalid option restarting...');
-					init();
+					console.log('Thanks for using the app!');
+					connection.end();
 					break;
 			}
 		});
@@ -51,7 +60,29 @@ function employeeSearch() {
 			LEFT JOIN department d ON r.department_id = d.id`,
 		(err, res) => {
 			if (err) throw err;
-			console.table("All Employees", res);
+			console.table("-Employees-", res);
+			init();
+		}
+	);
+};
+
+function showDept() {
+	connection.query(
+		`SELECT * FROM department`,
+		(err, res) => {
+			if (err) throw err;
+			console.table("-Results-", res);
+			init();
+		}
+	);
+};
+
+function showRoles() {
+	connection.query(
+		`SELECT * FROM role`,
+		(err, res) => {
+			if (err) throw err;
+			console.table("-Results-", res);
 			init();
 		}
 	);
@@ -67,7 +98,7 @@ function addOption () {
 			choices: ['Department', 'Role', 'Employee', 'Exit']
 		}
 	]).then((res) => {
-		switch (res.choice) {
+		switch (res.add) {
 			case 'Department':
 				addDepartment();
 				break;
@@ -84,8 +115,51 @@ function addOption () {
 	})
 };
 
+function addDepartment() {
+	inquirer
+	.prompt([
+		{
+			name: 'dept',
+			type: 'input',
+			message: 'What department would you like to add?'
+		}
+	]).then((res) => {
+		connection.query(
+			`INSERT INTO department (name)
+			VALUES ('${res.dept}')`,
+			(err, res) => {
+				if (err) throw err;
+				console.table('Department Added.');
+				init();
+			}
+		)
+	})
+};
+
+// function addDepartment() {
+// 	inquirer
+// 	.prompt([
+// 		{
+// 			name: 'dept',
+// 			type: 'input',
+// 			message: 'What department would you like to add?'
+// 		}
+// 	]).then((res) => {
+// 		connection.query(
+// 			`INSERT INTO department (name)
+// 			VALUES ('${res.dept}')`,
+// 			(err, res) => {
+// 				if (err) throw err;
+// 				console.table('Department Added.');
+// 				init();
+// 			}
+// 		)
+// 	})
+// };
+
 connection.connect((err) => {
 	if (err) throw err;
+	console.log('----------------------------------------------------------------------------------');
 	console.log(figlet.textSync('Employee Tracker', {
 		//cosmike font looks cool
 		font: 'Star Wars',
@@ -94,6 +168,7 @@ connection.connect((err) => {
 		width: 120,
 		whitespaceBreak: true
 	}));
+	console.log('----------------------------------------------------------------------------------');
 	console.log('\n');
 	init();
 });
