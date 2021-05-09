@@ -148,9 +148,18 @@ function updateRole() {
 		}
 		]).then((res) =>{
 			connection.query(
-				`UPDATE employee
-				SET role_id = ${res.roleID} 
-				WHERE id = ${res.updateID} `,
+				'UPDATE employee SET ? WHERE ?',
+				[
+					{
+						role_id: res.roleID
+					},
+					{
+						id: res.updateID
+					}
+				],	
+				// `UPDATE employee
+				// SET role_id = ${res.roleID} 
+				// WHERE id = ${res.updateID} `,
 				(err, res) => {
 					if (err) throw err;
 					console.log("Role Updated");
