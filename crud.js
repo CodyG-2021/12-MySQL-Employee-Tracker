@@ -64,7 +64,8 @@ function employeeSearch() {
 			d.name AS 'Department'
 		  FROM employee e
 		  LEFT JOIN role r ON e.role_id = r.id
-			LEFT JOIN department d ON r.department_id = d.id`,
+			LEFT JOIN department d ON r.department_id = d.id
+			ORDER BY e.first_name`,
 		(err, res) => {
 			if (err) throw err;
 			console.table("-Employees-", res);
@@ -79,7 +80,8 @@ function employeeSalaries() {
 		CONCAT(e.first_name, ' ', e.last_name) AS 'Name',
 		r.salary AS 'Salary'
 		FROM employee e
-		LEFT JOIN role r ON e.role_id = r.id`,
+		LEFT JOIN role r ON e.role_id = r.id
+		ORDER BY e.first_name`,
 		(err, res) => {
 			if (err) throw err;
 			console.table("-Results-", res);
@@ -90,7 +92,7 @@ function employeeSalaries() {
 
 function showDept() {
 	connection.query(
-		`SELECT * FROM department`,
+		`SELECT * FROM department ORDER BY id`,
 		(err, res) => {
 			if (err) throw err;
 			console.table("-Results-", res);
@@ -101,7 +103,7 @@ function showDept() {
 
 function showRoles() {
 	connection.query(
-		`SELECT * FROM role`,
+		`SELECT * FROM role ORDER BY id`,
 		(err, res) => {
 			if (err) throw err;
 			console.table("-Results-", res);
@@ -111,7 +113,6 @@ function showRoles() {
 };
 
 function updateRole() {
-
 	connection.query(
 		`SELECT
 		e.id AS 'ID',
@@ -211,32 +212,94 @@ function addDepartment() {
 			VALUES ('${res.dept}')`,
 			(err, res) => {
 				if (err) throw err;
-				console.table('Department Added.');
+				console.table(`${res.affectedRows} department added.`);
 				init();
 			}
 		)
 	})
 };
 function addRole() {
-	inquirer
-	.prompt([
-		{
-			name: 'dept',
-			type: 'input',
-			message: 'What role would you like to add?'
+	connection.query(
+		`SELECT * FROM department ORDER BY id`,
+		(err, res) => {
+			if (err) throw err;
+			console.table("-Roles can only be added to current department ID's-", res);
 		}
-	]).then((res) => {
-		connection.query(
-			`INSERT INTO department (name)
-			VALUES ('${res.dept}')`,
-			(err, res) => {
-				if (err) throw err;
-				console.table('Department Added.');
-				init();
+	);
+
+	setTimeout(function(){
+		inquirer
+		.prompt([
+			{
+				name: 'role',
+				type: 'input',
+				message: 'What role would you like to add?'
+			},
+			{
+				name: 'salary',
+				type: 'input',
+				message: 'What is that roles salary?'
+			},
+			{
+				name: 'deptId',
+				type: 'input',
+				message: 'What id the roles department ID?'
 			}
-		)
-	})
+		]).then((res) => {
+			connection.query(
+				'INSERT INTO role SET ?',
+				{
+					title: `${res.role}`,
+					salary: res.salary,
+					department_id: res.deptId
+				},
+				// `INSERT INTO roles (title, salary, department_id)
+				// VALUES ('${res.role}', ${res.salary}, ${res.deptId})`,
+				(err, res) => {
+					if (err) throw err;
+					console.table('Role Added.');
+					init();
+				}
+			)
+		})
+	}, 1000);
 };
+// function addEmployee() {
+// 	inquirer
+// 	.prompt([
+// 		{
+// 			name: '',
+// 			type: 'input',
+// 			message: 'What role would you like to add?'
+// 		},
+// 		{
+// 			name: 'salary',
+// 			type: 'input',
+// 			message: 'What is that roles salary?'
+// 		},
+// 		{
+// 			name: 'deptId',
+// 			type: 'input',
+// 			message: 'What id the roles department ID?'
+// 		}
+// 	]).then((res) => {
+// 		connection.query(
+// 			'INSERT INTO role SET ?',
+// 			{
+// 				title: `${res.role}`,
+// 				salary: res.salary,
+// 				department_id: res.deptId
+// 			},
+// 			// `INSERT INTO roles (title, salary, department_id)
+// 			// VALUES ('${res.role}', ${res.salary}, ${res.deptId})`,
+// 			(err, res) => {
+// 				if (err) throw err;
+// 				console.table('Role Added.');
+// 				init();
+// 			}
+// 		)
+// 	})
+// };
 
 connection.connect((err) => {
 	if (err) throw err;
