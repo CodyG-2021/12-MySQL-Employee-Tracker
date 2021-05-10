@@ -2,7 +2,7 @@
 
 ## Description
 
-Create an interface that allows a user to track their employees. The app will contain roles, departments, and salaries while tieing them together. The app will also allow the ability to add in additional fields o the mentioned categories.    
+Create an interface that allows a user to track their employees. The app will contain roles, departments, and salaries while tying them together. The app will also allow the ability to add in additional fields for the mentioned categories.    
 
 ## Table of Contents
 - [Description](#description)
@@ -42,6 +42,8 @@ It will show you the current table for reference.
 When you're done select exit to end the connection. 
 
 ![The note pad with saved entries](Assets/Images/et.png)
+
+For a video demonstration [click here](https://drive.google.com/file/d/1kPXK9XSfSF-zBCQHvpR2Z06xCYmOkIN9/view?usp=sharing)
 
 ## License
 
