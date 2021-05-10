@@ -243,7 +243,7 @@ function addRole() {
 			{
 				name: 'deptId',
 				type: 'input',
-				message: 'What id the roles department ID?'
+				message: 'What is the roles department ID?'
 			}
 		]).then((res) => {
 			connection.query(
@@ -264,42 +264,49 @@ function addRole() {
 		})
 	}, 1000);
 };
-// function addEmployee() {
-// 	inquirer
-// 	.prompt([
-// 		{
-// 			name: '',
-// 			type: 'input',
-// 			message: 'What role would you like to add?'
-// 		},
-// 		{
-// 			name: 'salary',
-// 			type: 'input',
-// 			message: 'What is that roles salary?'
-// 		},
-// 		{
-// 			name: 'deptId',
-// 			type: 'input',
-// 			message: 'What id the roles department ID?'
-// 		}
-// 	]).then((res) => {
-// 		connection.query(
-// 			'INSERT INTO role SET ?',
-// 			{
-// 				title: `${res.role}`,
-// 				salary: res.salary,
-// 				department_id: res.deptId
-// 			},
-// 			// `INSERT INTO roles (title, salary, department_id)
-// 			// VALUES ('${res.role}', ${res.salary}, ${res.deptId})`,
-// 			(err, res) => {
-// 				if (err) throw err;
-// 				console.table('Role Added.');
-// 				init();
-// 			}
-// 		)
-// 	})
-// };
+
+function addEmployee() {
+	inquirer
+	.prompt([
+		{
+			name: 'fname',
+			type: 'input',
+			message: 'What is the first name of the Employee?'
+		},
+		{
+			name: 'lname',
+			type: 'input',
+			message: 'What is the last name of the employee?'
+		},
+		{
+			name: 'roleId',
+			type: 'input',
+			message: 'What is role id of the employee?'
+		}
+		// {
+		// 	name: 'manId',
+		// 	type: 'input',
+		// 	message: 'What id the roles department ID, leave blank if no manager?'
+		// }
+	]).then((res) => {
+		connection.query(
+			// 'INSERT INTO employee VALUES ?',
+			// {
+			// 	first_name: `${res.fname}`,
+			// 	last_name: `${res.lname}`,
+			// 	role_id: res.roleId,
+			// 	manager_id: res.manId
+			// },
+			`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+			VALUES ('${res.fname}', '${res.lname}', ${res.roleId}, NULL)`,
+			(err, res) => {
+				if (err) throw err;
+				console.table('Employee Added.');
+				init();
+			}
+		)
+	})
+};
 
 connection.connect((err) => {
 	if (err) throw err;
